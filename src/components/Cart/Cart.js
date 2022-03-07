@@ -2,18 +2,40 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "reactstrap";
 import StarRatings from "react-star-ratings";
-import { cartremoved, cartempty, inccounter, deccounter } from "../../actions";
+import {
+  cartremoved,
+  cartempty,
+  cartpriceinc,
+  cartpricedec,
+} from "../../actions";
 import "./Cart.css";
 import { useNavigate } from "react-router-dom";
-function Cart() {
+function Cart({ products }) {
   const items = useSelector((state) => state.cart);
-  const count = useSelector((state) => state.counter);
   const search = useSelector((state) => state.search);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   console.log(items);
+
+  const incrementFun = (index) => {
+    // console.log(index);
+    // console.log(items[index].price);
+    // console.log(products.data[index].price);
+    dispatch(cartpriceinc(index, products.data[index].price));
+  };
+  const decrementFun = (index) => {
+    dispatch(cartpricedec(index, products.data[index].price));
+    if (items[index].price < products.data[index].price) {
+      if (items.length === 1) {
+        dispatch(cartremoved(index));
+        navigate("/products");
+      } else {
+        dispatch(cartremoved(index));
+      }
+    }
+  };
   const removeButton = (index) => {
-    if (items.cart.length === 1) {
+    if (items.length === 1) {
       dispatch(cartremoved(index));
       navigate("/products");
     } else {
@@ -26,26 +48,26 @@ function Cart() {
     navigate("/products");
   };
 
+  let totalResult = 0;
+  let totalCheckOut = 0;
+
   function sf() {
-    if (items.cart.length === 0) {
+    if (items.length === 0) {
       return;
     } else {
-      let itemsCart = items.cart;
+      let itemsCart = items;
       let itemsmap = itemsCart.map((el) => el.price);
       let sumResult = itemsmap.reduce((a, b) => a + b);
+      totalResult = sumResult.toFixed(2);
+      totalCheckOut = (sumResult + 40).toFixed(2);
       return sumResult;
     }
   }
-  let sumFunction = sf();
+  sf();
+  // let totalResult = sumFunction.toFixed(2);
+  // let totalCheckOut = (sumFunction + 40).toFixed(2);
 
-  const incrementBtn = (index) => {
-    dispatch(inccounter(index));
-  };
-
-  const decrementBtn = (index) => {
-    dispatch(deccounter(index));
-  };
-  const filteredCart = items.cart?.filter((item) =>
+  const filteredCart = items?.filter((item) =>
     item.title.toLowerCase().includes(search.toLowerCase())
   );
   return (
@@ -53,7 +75,7 @@ function Cart() {
       <div className="first-child-cart">
         <div className="first-child-cartHead">
           <div style={{ fontWeight: "bolder", fontSize: "27px" }}>
-            My Cart({items.cart.length})
+            My Cart({items.length})
           </div>
           <div style={{ fontWeight: "bold", paddingTop: "7px" }}>
             Deliver to
@@ -91,7 +113,9 @@ function Cart() {
               </div>
               <div className="second-child1">
                 <div style={{ fontWeight: "bold" }}>{product.title}</div>
-                <div style={{ fontWeight: "bold" }}>₹ {product.price}</div>
+                <div style={{ fontWeight: "bold" }}>
+                  ₹ {product.price.toFixed(2)}
+                </div>
                 <div>
                   <StarRatings
                     rating={product.rating}
@@ -105,9 +129,26 @@ function Cart() {
                   Remove from cart
                 </Button>
                 <div>
-                  <button onClick={() => incrementBtn(index)}>+</button>
-                  {count}
-                  <button onClick={() => decrementBtn(index)}>-</button>
+                  <button
+                    onClick={() => incrementFun(index)}
+                    style={{
+                      width: "2vw",
+                      backgroundColor: "orangered",
+                      color: "white",
+                    }}
+                  >
+                    +
+                  </button>
+                  <button
+                    onClick={() => decrementFun(index)}
+                    style={{
+                      width: "1.8vw",
+                      backgroundColor: "orangered",
+                      color: "white",
+                    }}
+                  >
+                    -
+                  </button>
                 </div>
               </div>
             </div>
@@ -120,8 +161,8 @@ function Cart() {
           <div className="second-child-cartHeader">PRICE DETAILS </div>
           <hr />
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <div>Price({items.cart.length} items)</div>
-            <div>₹ {sumFunction} </div>
+            <div>Price({items.length} items)</div>
+            <div>₹ {totalResult} </div>
           </div>
           <div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -136,12 +177,12 @@ function Cart() {
           <hr />
           <div className="second-child-cartFooter">
             <div>Total Amount</div>
-            <div>₹ {sumFunction + 40}</div>
+            <div>₹ {totalCheckOut}</div>
           </div>
           <hr />
         </div>
         <div>
-          {items.cart.length === 0 ? (
+          {items.length === 0 ? (
             ""
           ) : (
             <div className="cart-footer">

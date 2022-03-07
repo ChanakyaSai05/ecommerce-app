@@ -11,6 +11,24 @@ export const cartadded = (id, title, image, price, rating) => {
   };
 };
 
+export const cartpriceinc = (index, price) => {
+  return {
+    type: "CARTINC",
+    payload: {
+      index: index,
+      price: price,
+    },
+  };
+};
+export const cartpricedec = (index, price) => {
+  return {
+    type: "CARTDEC",
+    payload: {
+      index: index,
+      price: price,
+    },
+  };
+};
 export const cartremoved = (index) => {
   return {
     type: "REMOVEFROMCART",

@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { CardGroup } from "reactstrap";
-import axios from "axios";
+// import axios from "axios";
 import Cards from "../card/Cards";
 import "./Products.css";
 import SideNav from "../sidenav/SideNav";
 import { useSelector } from "react-redux";
 
-function Products() {
+function Products({ products }) {
   const search = useSelector((state) => state.search);
-  const [products, setProducts] = useState([]);
-  const getProducts = async () => {
-    const url = "https://fakestoreapi.com/products";
-    await axios
-      .get(url)
-      .then((result) => setProducts(result))
-      .catch((err) => console.log(err));
-  };
+  // const [products, setProducts] = useState([]);
+  // const getProducts = async () => {
+  //   const url = "https://fakestoreapi.com/products";
+  //   await axios
+  //     .get(url)
+  //     .then((result) => setProducts(result))
+  //     .catch((err) => console.log(err));
+  // };
 
-  useEffect(() => {
-    getProducts();
-  }, []);
+  // useEffect(() => {
+  //   getProducts();
+  // }, []);
   console.log(products.data);
   const filteredSearch = products.data?.filter((item) =>
     item.title.toLowerCase().includes(search.toLowerCase())

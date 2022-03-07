@@ -35,7 +35,7 @@ function Nav() {
         <div>
           <Link to="/cart" style={{ textDecoration: "none" }}>
             <span className="cart-number">
-              {cart.cart.length === 0 ? "" : cart.cart.length}
+              {cart.length === 0 ? "" : cart.length}
             </span>
             <span style={{ marginRight: "4px" }}>
               <i class="bi bi-cart"></i>

@@ -15,7 +15,7 @@ import { cartadded } from "../../actions";
 function Cards({ id, title, image, price, rating }) {
   const [cartState, setCartState] = useState(false);
   const totalCartState = useSelector((state) => state.cart);
-  const result = totalCartState.cart.map((item) => item.id);
+  const result = totalCartState.map((item) => item.id);
 
   const dispatch = useDispatch();
   const addButton = () => {
@@ -30,13 +30,14 @@ function Cards({ id, title, image, price, rating }) {
       setCartState(false);
     }
   };
+  let titleSlice = title.substr(0, 31);
   return (
     <div className="card-component">
       <Card className="m-2">
         <CardImg alt="Card image cap" src={image} width="400" height="300" />
         <CardBody>
           <div style={{ height: "10vh" }}>
-            <CardTitle tag="h5">{title}</CardTitle>
+            <CardTitle tag="h5">{titleSlice}</CardTitle>
           </div>
 
           <CardSubtitle className="mb-2 text-muted" tag="h6">
